@@ -35,6 +35,30 @@ function getBooksPossessedByAccount(account, books, authors) {
   return checkedOutDetails;
 }
 
+//Helper function to find author by id number
+function findAuthor(authors, id) {
+  return authors.find((author) => author.id === id);
+}
+
+//Helper function to check if book is checked out by any account
+function bookCheckedOut(book, accountId) {
+  return book.borrows.some((borrow) => borrow.id === accountId && !borrow.returned);
+}
+
+//Helper function to get checked out details
+function checkedOutDetails(checkedBooks, authors) {
+  return checkedBooks.map((book) => ({
+    ...book,
+    author: findAuthor(authors, book.authorId),
+  }));
+}
+
+//Combined function
+function getBooksPossessedByAccount(account, books, authors) {
+  const checkedBooks = books.filter((book) => bookCheckedOut(book, account.id));
+  return checkedOutDetails(checkedBooks, authors);
+}
+
 module.exports = {
   findAccountById,
   sortAccountsByLastName,
